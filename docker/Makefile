@@ -3,3 +3,6 @@ up:
 
 down:
 	docker-compose down
+
+bash:
+	docker exec -it push_sender_php_container bash
