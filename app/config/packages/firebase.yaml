@@ -1,0 +1,4 @@
+kreait_firebase:
+    projects:
+        push_sender_android:
+            credentials: '%kernel.project_dir%/config/pushsendertest_credentials.json'
