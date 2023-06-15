@@ -3,27 +3,28 @@
 namespace App\MessageHandler;
 
 use App\Message\PushMessage;
-use App\Pusher\FirebasePusherFactory;
-use Kreait\Firebase\Exception\Messaging\InvalidMessage;
+use App\Pusher\FirebasePusher;
+use Exception;
+use Kreait\Firebase\Contract\Messaging;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class PushMessageHandler implements MessageHandlerInterface
+#[AsMessageHandler(fromTransport: 'async')]
+class PushMessageHandler
 {
     public function __construct(
-        private FirebasePusherFactory $firebasePusherFactory,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private Messaging $messaging
     ) {
 
     }
     public function __invoke(PushMessage $pushMessage)
     {
-        $firebasePusher = $this->firebasePusherFactory->createPusher();
-        
+        $firebasePusher = new FirebasePusher($this->messaging);
         try {
-            $firebasePusher->push($pushMessage);
-        } catch (InvalidMessage $e) {
-           $this->logger->error($e->getMessage());
+            $firebasePusher->sendPush($pushMessage);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
         }
     }
 

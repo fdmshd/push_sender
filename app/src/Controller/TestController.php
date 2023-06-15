@@ -21,7 +21,7 @@ class TestController extends AbstractController
             firebaseToken: $decodedRequest->firebase_token,
             title: $decodedRequest->title,
             body: $decodedRequest->body
-         );
+        );
 
         $bus->dispatch($message);
 

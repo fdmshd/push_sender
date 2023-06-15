@@ -3,23 +3,20 @@
 namespace App\Pusher;
 
 use App\Message\PushMessage;
-use Exception;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Exception\Messaging\InvalidMessage;
-use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Psr\Log\LoggerInterface;
 
-class FirebasePusher implements Pusher
+
+class FirebasePusher
 {
 
     public function __construct(
         private Messaging $messaging,
     ) {
-
     }
 
-    public function push(PushMessage $pushMessage)
+    public function sendPush(PushMessage $pushMessage)
     {
         $message = CloudMessage::withTarget('token', $pushMessage->getFirebaseToken())
             ->withNotification([
@@ -28,12 +25,7 @@ class FirebasePusher implements Pusher
             ])
             ->withDefaultSounds();
 
-        try {
-            $this->messaging->validate($message);
-        } catch (InvalidMessage $e) {
-            throw $e;
-        }
-
+        $this->messaging->validate($message);
         $this->messaging->send($message);
     }
 
