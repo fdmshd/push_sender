@@ -19,8 +19,11 @@ class TestController extends AbstractController
 
         $message = new PushMessage(
             firebaseToken: $decodedRequest->firebase_token,
+            apnsToken: $decodedRequest->apns_token,
             title: $decodedRequest->title,
-            body: $decodedRequest->body
+            subtitle: $decodedRequest->subtitle ?? "",
+            body: $decodedRequest->body,
+            customData: $decodedRequest->customData ?? [],
         );
 
         $bus->dispatch($message);
